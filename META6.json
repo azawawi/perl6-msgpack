@@ -1,0 +1,19 @@
+{
+    "name"          : "MsgPack",
+    "license"       : "MIT",
+    "version"       : "0.0.1",
+    "perl"          : "6.c",
+    "description"   : "Perl 6 Interface to libmsgpack",
+    "auth"          : "github:azawawi",
+    "authors"       : [ "Ahmad M. Zawawi" ],
+    "test-depends"  : [ "Test" ],
+    "provides"      : {
+        "MsgPack" : "lib/MsgPack.pm6"
+    },
+    "resources"     : [
+        "libmsgpack-perl6.dll",
+        "libmsgpack-perl6.dylib",
+        "libmsgpack-perl6.so"
+    ],
+    "source-url"    : "git://github.com/azawawi/perl6-msgpack.git"
+}
