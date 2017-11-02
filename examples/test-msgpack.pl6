@@ -5,9 +5,9 @@ use lib 'lib';
 use MsgPack;
 
 sub test() {
-    constant SIZE = 10_000;
-    my @data     = 1 xx SIZE;
-    my $packed   = MsgPack::pack( @data );
+    constant SIZE = 100_000;
+    my @data      = '1' xx SIZE;
+    my $packed    = MsgPack::pack( @data );
     #my $unpacked = Data::MessagePack::unpack( $packed );
 }
 

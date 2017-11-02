@@ -15,7 +15,6 @@ our sub pack( $data ) returns Blob
 
     _pack($pk, $data);
 
-    say "packing...";
     my @packed = gather {
         for 0..($sbuf.size - 1) {
             take 0xff +& $sbuf.data[$_];
