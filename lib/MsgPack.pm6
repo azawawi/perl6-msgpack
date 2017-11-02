@@ -88,3 +88,34 @@ sub msgpack_pack_str_body(msgpack_packer $pk is rw, Str $b, size_t $l)
     is symbol('wrapped_msgpack_pack_str_body')
     is export
     { * }
+
+our sub pack( $data ) returns Blob
+{
+    my msgpack_sbuffer $sbuf = msgpack_sbuffer.new;
+    my msgpack_packer $pk = msgpack_packer.new;
+
+    msgpack_sbuffer_init($sbuf);
+    msgpack_packer_init($pk, $sbuf);
+
+    #TODO do generic packing according to the type of $data
+    msgpack_pack_array($pk, 3);
+    msgpack_pack_int($pk, 1);
+    msgpack_pack_true($pk);
+    my $text = "example";
+    msgpack_pack_str($pk, $text.chars);
+    msgpack_pack_str_body($pk, $text, $text.chars);
+
+    my @packed = gather {
+        for 0..($sbuf.size - 1) {
+            take 0xff +& $sbuf.data[$_];
+        }
+    }
+
+    msgpack_sbuffer_destroy($sbuf);
+
+    return Blob.new(@packed);
+}
+
+our sub unpack( Blob $blob ) {
+    ...
+}
