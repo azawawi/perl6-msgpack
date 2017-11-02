@@ -54,54 +54,63 @@ sub msgpack_packer_init(msgpack_packer $pk is rw, msgpack_sbuffer $sbuf is rw)
     { * }
 
 sub msgpack_pack_nil(msgpack_packer $pk is rw)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_nil')
     is export
     { * }
 
 sub msgpack_pack_true(msgpack_packer $pk is rw)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_true')
     is export
     { * }
 
 sub msgpack_pack_false(msgpack_packer $pk is rw)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_false')
     is export
     { * }
 
 sub msgpack_pack_array(msgpack_packer $pk is rw, size_t $n)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_array')
     is export
     { * }
 
 sub msgpack_pack_int(msgpack_packer $pk is rw, int32 $d)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_int')
     is export
     { * }
 
 sub msgpack_pack_float(msgpack_packer $pk is rw, num32 $d)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_float')
     is export
     { * }
 
 sub msgpack_pack_double(msgpack_packer $pk is rw, num64 $d)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_double')
     is export
     { * }
 
 sub msgpack_pack_str(msgpack_packer $pk is rw, size_t $l)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_str')
     is export
     { * }
 
 sub msgpack_pack_str_body(msgpack_packer $pk is rw, Str $b, size_t $l)
+    returns int32
     is native(&library)
     is symbol('wrapped_msgpack_pack_str_body')
     is export

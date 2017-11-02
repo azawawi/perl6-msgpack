@@ -47,32 +47,32 @@ EXTERN_C void wrapped_msgpack_packer_init(msgpack_packer* pk, void* data) {
     msgpack_packer_init(pk, data, msgpack_sbuffer_write);
 }
 
-EXTERN_C void wrapped_msgpack_pack_array(msgpack_packer* pk, size_t n) {
-    msgpack_pack_array(pk, n);
+EXTERN_C int wrapped_msgpack_pack_array(msgpack_packer* pk, size_t n) {
+    return msgpack_pack_array(pk, n);
 }
 
-EXTERN_C void wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {
-    msgpack_pack_int(pk, d);
+EXTERN_C int wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {
+    return msgpack_pack_int(pk, d);
 }
 
-EXTERN_C void wrapped_msgpack_pack_float(msgpack_packer* pk, float d) {
-    msgpack_pack_float(pk, d);
+EXTERN_C int wrapped_msgpack_pack_float(msgpack_packer* pk, float d) {
+    return msgpack_pack_float(pk, d);
 }
 
-EXTERN_C void wrapped_msgpack_pack_double(msgpack_packer* pk, double d) {
-    msgpack_pack_double(pk, d);
+EXTERN_C int wrapped_msgpack_pack_double(msgpack_packer* pk, double d) {
+    return msgpack_pack_double(pk, d);
 }
 
 EXTERN_C int wrapped_msgpack_pack_nil(msgpack_packer* pk) {
     return msgpack_pack_nil(pk);
 }
 
-EXTERN_C void wrapped_msgpack_pack_true(msgpack_packer* pk) {
-    msgpack_pack_true(pk);
+EXTERN_C int wrapped_msgpack_pack_true(msgpack_packer* pk) {
+    return msgpack_pack_true(pk);
 }
 
-EXTERN_C void wrapped_msgpack_pack_false(msgpack_packer* pk) {
-    msgpack_pack_false(pk);
+EXTERN_C int wrapped_msgpack_pack_false(msgpack_packer* pk) {
+    return msgpack_pack_false(pk);
 }
 
 EXTERN_C int wrapped_msgpack_pack_str(msgpack_packer* pk, size_t l) {
