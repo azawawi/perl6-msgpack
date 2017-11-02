@@ -97,13 +97,7 @@ our sub pack( $data ) returns Blob
     msgpack_sbuffer_init($sbuf);
     msgpack_packer_init($pk, $sbuf);
 
-    #TODO do generic packing according to the type of $data
-    msgpack_pack_array($pk, 3);
-    msgpack_pack_int($pk, 1);
-    msgpack_pack_true($pk);
-    my $text = "example";
-    msgpack_pack_str($pk, $text.chars);
-    msgpack_pack_str_body($pk, $text, $text.chars);
+    _pack($pk, $data);
 
     my @packed = gather {
         for 0..($sbuf.size - 1) {
@@ -114,6 +108,29 @@ our sub pack( $data ) returns Blob
     msgpack_sbuffer_destroy($sbuf);
 
     return Blob.new(@packed);
+}
+
+multi sub _pack(msgpack_packer $pk, List $list) {
+    msgpack_pack_array($pk, $list.elems);
+    _pack( $pk, $_ )  for @$list;
+}
+
+multi sub _pack(msgpack_packer $pk, Bool $bool) {
+    if $bool {
+        msgpack_pack_true($pk);
+    } else {
+        msgpack_pack_true($pk);
+    }
+}
+
+multi sub _pack(msgpack_packer $pk, Int $integer) {
+    msgpack_pack_int($pk, $integer);
+}
+
+multi sub _pack(msgpack_packer $pk, Str $string) {
+    my $len = $string.chars;
+    msgpack_pack_str($pk, $len);
+    msgpack_pack_str_body($pk, $string, $len);
 }
 
 our sub unpack( Blob $blob ) {
