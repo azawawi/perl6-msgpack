@@ -83,6 +83,18 @@ sub msgpack_pack_int(msgpack_packer $pk is rw, int32 $d)
     is export
     { * }
 
+sub msgpack_pack_float(msgpack_packer $pk is rw, num32 $d)
+    is native(&library)
+    is symbol('wrapped_msgpack_pack_float')
+    is export
+    { * }
+
+sub msgpack_pack_double(msgpack_packer $pk is rw, num64 $d)
+    is native(&library)
+    is symbol('wrapped_msgpack_pack_double')
+    is export
+    { * }
+
 sub msgpack_pack_str(msgpack_packer $pk is rw, size_t $l)
     is native(&library)
     is symbol('wrapped_msgpack_pack_str')

@@ -55,6 +55,14 @@ EXTERN_C void wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {
     msgpack_pack_int(pk, d);
 }
 
+EXTERN_C void wrapped_msgpack_pack_float(msgpack_packer* pk, float d) {
+    msgpack_pack_float(pk, d);
+}
+
+EXTERN_C void wrapped_msgpack_pack_double(msgpack_packer* pk, double d) {
+    msgpack_pack_double(pk, d);
+}
+
 EXTERN_C int wrapped_msgpack_pack_nil(msgpack_packer* pk) {
     return msgpack_pack_nil(pk);
 }
