@@ -112,14 +112,14 @@ our sub pack( $data ) returns Blob
 
 multi sub _pack(msgpack_packer $pk, List $list) {
     msgpack_pack_array($pk, $list.elems);
-    _pack( $pk, $_ )  for @$list;
+    _pack( $pk, $_ ) for @$list;
 }
 
 multi sub _pack(msgpack_packer $pk, Bool $bool) {
     if $bool {
         msgpack_pack_true($pk);
     } else {
-        msgpack_pack_true($pk);
+        msgpack_pack_false($pk);
     }
 }
 
