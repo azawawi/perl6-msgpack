@@ -64,3 +64,11 @@ my multi sub _pack(msgpack_packer $pk, Str:D $string) {
 our sub unpack( Blob $blob ) {
     ...
 }
+
+our sub version returns Hash {
+    return %(
+        major    => msgpack_version_major,
+        minor    => msgpack_version_minor,
+        revision => msgpack_version_revision,
+        string   => msgpack_version);
+}

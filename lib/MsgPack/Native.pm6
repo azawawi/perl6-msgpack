@@ -106,3 +106,9 @@ sub msgpack_pack_str_body(msgpack_packer $pk is rw, Str $b, size_t $l)
     is symbol('wrapped_msgpack_pack_str_body')
     is export
     { * }
+
+# msgpack/version.h
+sub msgpack_version          is native(&libmsgpack) is export returns Str   { * }
+sub msgpack_version_major    is native(&libmsgpack) is export returns int32 { * }
+sub msgpack_version_minor    is native(&libmsgpack) is export returns int32 { * }
+sub msgpack_version_revision is native(&libmsgpack) is export returns int32 { * }
