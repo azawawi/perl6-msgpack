@@ -55,6 +55,10 @@ EXTERN_C void wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {
     msgpack_pack_int(pk, d);
 }
 
+EXTERN_C int wrapped_msgpack_pack_nil(msgpack_packer* pk) {
+    return msgpack_pack_nil(pk);
+}
+
 EXTERN_C void wrapped_msgpack_pack_true(msgpack_packer* pk) {
     msgpack_pack_true(pk);
 }

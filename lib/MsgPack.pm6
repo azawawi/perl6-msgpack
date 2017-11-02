@@ -22,18 +22,20 @@ our sub pack( $data ) returns Blob
     }
 
     msgpack_sbuffer_destroy($sbuf);
-    
-    say "Done";
 
     return Blob.new(@packed);
 }
 
-my multi sub _pack(msgpack_packer $pk, List $list) {
+my multi sub _pack(msgpack_packer $pk, Any $thing) {
+    msgpack_pack_nil($pk);
+}
+
+my multi sub _pack(msgpack_packer $pk, List:D $list) {
     msgpack_pack_array($pk, $list.elems);
     _pack( $pk, $_ ) for @$list;
 }
 
-my multi sub _pack(msgpack_packer $pk, Bool $bool) {
+my multi sub _pack(msgpack_packer $pk, Bool:D $bool) {
     if $bool {
         msgpack_pack_true($pk);
     } else {
@@ -41,11 +43,11 @@ my multi sub _pack(msgpack_packer $pk, Bool $bool) {
     }
 }
 
-my multi sub _pack(msgpack_packer $pk, Int $integer) {
+my multi sub _pack(msgpack_packer $pk, Int:D $integer) {
     msgpack_pack_int($pk, $integer);
 }
 
-my multi sub _pack(msgpack_packer $pk, Str $string) {
+my multi sub _pack(msgpack_packer $pk, Str:D $string) {
     my $len = $string.chars;
     msgpack_pack_str($pk, $len);
     msgpack_pack_str_body($pk, $string, $len);

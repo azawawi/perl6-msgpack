@@ -53,6 +53,12 @@ sub msgpack_packer_init(msgpack_packer $pk is rw, msgpack_sbuffer $sbuf is rw)
     is export
     { * }
 
+sub msgpack_pack_nil(msgpack_packer $pk is rw)
+    is native(&library)
+    is symbol('wrapped_msgpack_pack_nil')
+    is export
+    { * }
+
 sub msgpack_pack_true(msgpack_packer $pk is rw)
     is native(&library)
     is symbol('wrapped_msgpack_pack_true')
