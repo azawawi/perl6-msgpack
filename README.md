@@ -29,6 +29,31 @@ To install it using zef (a module management tool bundled with Rakudo Star):
 $ zef install MsgPack
 ```
 
+## Dependencies
+
+Please follow the instructions below based on your platform:
+
+### Linux (Debian)
+
+- To install `msgpack` development headers / libraries, please run:
+```
+$ sudo apt-get install libmsgpack-dev
+```
+
+## macOS
+
+- To install `msgpack` development headers / libraries, please run:
+```
+$ brew update
+$ brew install msgpack
+```
+
+## Windows
+
+Not supported at the moment but planned as a pre-built DLL in the near future.
+
+TODO support
+
 ## Testing
 
 - To run tests:
