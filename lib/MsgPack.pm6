@@ -32,7 +32,7 @@ my multi sub _pack(msgpack_packer $pk, Any:U $thing) {
 
 my multi _pack(msgpack_packer $pk, Numeric:D $f) {
     if $f.Int == $f {
-        return _pack( $f.Int );
+        return _pack( $pk, $f.Int );
     }
     #TODO when to use msgpack_pack_float?
     msgpack_pack_double($pk, $f.Num);
