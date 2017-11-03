@@ -99,7 +99,7 @@ EXTERN_C int wrapped_msgpack_pack_false(msgpack_packer* pk) {
 
 EXTERN_C int wrapped_msgpack_pack_str(msgpack_packer* pk, size_t l) {
 #if MSGPACK_VERSION_MAJOR == 0
-    return msgpack_pack_raw(pk, n);
+    return msgpack_pack_raw(pk, l);
 #else
     return msgpack_pack_str(pk, l);
 #endif
