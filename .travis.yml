@@ -20,7 +20,7 @@ before_install:
   # macOS libmsgpack installation
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update          ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install msgpack ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then find /usr -name '*msgpack*.so*' ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then find /usr -name '*msgpack*.dylib*' ; fi
 
 install:
   - rakudobrew build zef
