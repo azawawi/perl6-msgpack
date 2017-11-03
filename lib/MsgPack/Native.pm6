@@ -141,4 +141,8 @@ sub msgpack_pack_str_body(msgpack_packer $pk is rw, Str $b, size_t $l)
 sub msgpack_version          is native(&libmsgpack) is export returns Str   { * }
 sub msgpack_version_major    is native(&libmsgpack) is export returns int32 { * }
 sub msgpack_version_minor    is native(&libmsgpack) is export returns int32 { * }
-sub msgpack_version_revision is native(&libmsgpack) is export returns int32 { * }
+#
+# TODO handle backward compatibility under 1.0.0
+# See https://github.com/msgpack/msgpack-c/blob/master/CHANGELOG.md
+#
+#sub msgpack_version_revision is native(&libmsgpack) is export returns int32 { * }
