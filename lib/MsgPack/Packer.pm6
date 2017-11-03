@@ -19,15 +19,14 @@ method pack( $data ) returns Blob
 
     self._pack($data);
 
-    my @packed = gather {
-        for 0..($.sbuf.size - 1) {
-            take 0xff +& $.sbuf.data[$_];
-        }
-    }
+    my $packed;
+    my $size   = $.sbuf.size;
+    my $buffer = $.sbuf.data;
+    $packed.append($buffer[$_]) for ^$size;
 
     msgpack_sbuffer_destroy($.sbuf);
 
-    return Blob.new(@packed);
+    return Blob.new($packed);
 }
 
 multi method _pack(List:D $list) {
