@@ -102,6 +102,20 @@ sub msgpack_pack_bin_body(msgpack_packer $pk is rw, CArray[uint8] $b, size_t $l)
     is export
     { * }
 
+sub msgpack_pack_raw(msgpack_packer $pk is rw, size_t $n)
+    returns int32
+    is native(&library)
+    is symbol('wrapped_msgpack_pack_raw')
+    is export
+    { * }
+
+sub msgpack_pack_raw_body(msgpack_packer $pk is rw, CArray[uint8] $b, size_t $l)
+    returns int32
+    is native(&library)
+    is symbol('wrapped_msgpack_pack_raw_body')
+    is export
+    { * }
+
 sub msgpack_pack_int(msgpack_packer $pk is rw, int32 $d)
     returns int32
     is native(&library)
