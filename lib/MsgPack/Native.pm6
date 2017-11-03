@@ -17,7 +17,7 @@ sub libmsgpack {
     constant LIB = 'msgpackc';
 
     # macOS
-    return "libmsgpack.dylib" if $*KERNEL.name eq 'darwin';
+    return "libmsgpackc.dylib" if $*KERNEL.name eq 'darwin';
 
 	# Linux/Unix
 	if library-exists(LIB, v2) {
