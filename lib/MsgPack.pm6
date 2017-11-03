@@ -30,13 +30,13 @@ my multi sub _pack(msgpack_packer $pk, Any:U $thing) {
     msgpack_pack_nil($pk);
 }
 
-# my multi _pack(msgpack_packer $pk, Numeric:D $f) {
-#     if $f.Int == $f {
-#         return _pack( $f.Int );
-#     }
-#     #TODO when to use msgpack_pack_float?
-#     msgpack_pack_double($pk, $f);
-# }
+my multi _pack(msgpack_packer $pk, Numeric:D $f) {
+    if $f.Int == $f {
+        return _pack( $f.Int );
+    }
+    #TODO when to use msgpack_pack_float?
+    msgpack_pack_double($pk, $f.Num);
+}
 
 my multi sub _pack(msgpack_packer $pk, List:D $list) {
     msgpack_pack_array($pk, $list.elems);
