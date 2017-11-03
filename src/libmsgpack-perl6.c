@@ -8,6 +8,8 @@
 #define EXTERN_C extern
 #endif
 
+// TODO explain why we are wrapping them
+
 EXTERN_C void wrapped_msgpack_sbuffer_init(msgpack_sbuffer* sbuf)
 {
     msgpack_sbuffer_init(sbuf);
@@ -49,6 +51,10 @@ EXTERN_C void wrapped_msgpack_packer_init(msgpack_packer* pk, void* data) {
 
 EXTERN_C int wrapped_msgpack_pack_array(msgpack_packer* pk, size_t n) {
     return msgpack_pack_array(pk, n);
+}
+
+EXTERN_C int wrapped_msgpack_pack_map(msgpack_packer* pk, size_t n) {
+    return msgpack_pack_map(pk, n);
 }
 
 EXTERN_C int wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {

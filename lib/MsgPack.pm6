@@ -43,6 +43,11 @@ my multi sub _pack(msgpack_packer $pk, List:D $list) {
     _pack( $pk, $_ ) for @$list;
 }
 
+my multi sub _pack(msgpack_packer $pk, Hash:D $hash) {
+    msgpack_pack_map($pk, $hash.elems);
+    _pack( $pk, $_ ) for $hash.kv;
+}
+
 my multi sub _pack(msgpack_packer $pk, Bool:D $bool) {
     if $bool {
         msgpack_pack_true($pk);
