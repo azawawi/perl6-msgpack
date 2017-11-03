@@ -14,14 +14,13 @@ before_install:
   # Debian-based libmsgpack installation
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -qq update                ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libmsgpack-dev ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ls -aLR /usr/lib | grep msgpack ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ls -aLR /usr/local/lib | grep msgpack ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then find /usr -name '*msgpack*.so*'        ; fi
+
 
   # macOS libmsgpack installation
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update          ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install msgpack ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ls -aLR /usr/lib | grep msgpack ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ls -aLR /usr/local/lib | grep msgpack ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then find /usr -name '*msgpack*.so*' ; fi
 
 install:
   - rakudobrew build zef
