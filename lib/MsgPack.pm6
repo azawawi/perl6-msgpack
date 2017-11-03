@@ -3,6 +3,7 @@ use v6;
 
 unit module MsgPack;
 
+use NativeCall;
 use MsgPack::Native;
 
 our sub pack( $data ) returns Blob
@@ -46,6 +47,13 @@ my multi sub _pack(msgpack_packer $pk, List:D $list) {
 my multi sub _pack(msgpack_packer $pk, Hash:D $hash) {
     msgpack_pack_map($pk, $hash.elems);
     _pack( $pk, $_ ) for $hash.kv;
+}
+
+my multi sub _pack(msgpack_packer $pk, Blob:D $blob) {
+    my $len    = $blob.elems;
+    my $carray = CArray[uint8].new($blob);
+    msgpack_pack_bin($pk, $len);
+    msgpack_pack_bin_body($pk, $carray, $len);
 }
 
 my multi sub _pack(msgpack_packer $pk, Bool:D $bool) {

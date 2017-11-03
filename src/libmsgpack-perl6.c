@@ -57,6 +57,14 @@ EXTERN_C int wrapped_msgpack_pack_map(msgpack_packer* pk, size_t n) {
     return msgpack_pack_map(pk, n);
 }
 
+EXTERN_C int wrapped_msgpack_pack_bin(msgpack_packer* pk, size_t n) {
+    return msgpack_pack_bin(pk, n);
+}
+
+EXTERN_C int wrapped_msgpack_pack_bin_body(msgpack_packer* pk, const void* b, size_t l) {
+    return msgpack_pack_bin_body(pk, b, l);
+}
+
 EXTERN_C int wrapped_msgpack_pack_int(msgpack_packer* pk, int d) {
     return msgpack_pack_int(pk, d);
 }
