@@ -6,6 +6,7 @@ unit module MsgPack;
 use NativeCall;
 use MsgPack::Native;
 use MsgPack::Packer;
+use MsgPack::Unpacker;
 
 our sub pack( $data ) returns Blob
 {
@@ -13,7 +14,7 @@ our sub pack( $data ) returns Blob
 }
 
 our sub unpack( Blob $blob ) {
-    ...
+    return Unpacker.new.unpack($blob);
 }
 
 our sub version returns Hash {
