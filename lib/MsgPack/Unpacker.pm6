@@ -13,11 +13,8 @@ method unpack(Blob $packed) {
 
     my $sbuf = msgpack_sbuffer.new;
     msgpack_sbuffer_init($sbuf);
-    my $data = CArray[uint8].new($packed.bytes);
-    say $packed.perl;
-    say $packed.bytes.perl;
-    say "Elems size = " ~ $data.elems;
-    say $data[$_] for $data.elems;
+    my $data = CArray[uint8].new($packed);
+    say $data.map( { $_ +& 0xff } ).list;
 
     msgpack_sbuffer_write($sbuf, $data, $data.elems);
     my msgpack_unpacked $result = msgpack_unpacked.new;
@@ -28,8 +25,8 @@ method unpack(Blob $packed) {
     while $ret == MSGPACK_UNPACK_SUCCESS.value {
         my msgpack_object $obj = $result.data;
 
-        say "3";
         given $obj.type {
+            when MSGPACK_OBJECT_NIL     { say "Any"   }
             when MSGPACK_OBJECT_ARRAY   { say "Array" } 
             when MSGPACK_OBJECT_POSITIVE_INTEGER { say "+ive Int" }
             when MSGPACK_OBJECT_NEGATIVE_INTEGER { say "-ive Int" }
@@ -56,6 +53,4 @@ method unpack(Blob $packed) {
     } else {
         say "Return type is $ret";
     }
-
-    return [];
 }
