@@ -4,27 +4,11 @@ use v6;
 unit module MsgPack::Native;
 
 use NativeCall;
-use LibraryCheck;
 
 # ....
 sub library {
     my $lib-name = sprintf($*VM.config<dll>, "msgpack-perl6");
     return ~(%?RESOURCES{$lib-name});    
-}
-
-# ....
-sub libmsgpack {
-    constant LIB = 'msgpackc';
-
-    # macOS
-    return "libmsgpackc.dylib" if $*KERNEL.name eq 'darwin';
-
-	# Linux/Unix
-	if library-exists(LIB, v2) {
-		return sprintf('lib%s.so.2', LIB);
-	} else {
-		return sprintf('lib%s.so', LIB);
-	}
 }
 
 class msgpack_sbuffer is repr('CStruct') is export {
@@ -229,11 +213,11 @@ enum msgpack_object_type is export (
 );
 
 # msgpack/version.h
-sub msgpack_version          is native(&libmsgpack) is export returns Str   { * }
-sub msgpack_version_major    is native(&libmsgpack) is export returns int32 { * }
-sub msgpack_version_minor    is native(&libmsgpack) is export returns int32 { * }
+sub msgpack_version          is native(&library) is export returns Str   { * }
+sub msgpack_version_major    is native(&library) is export returns int32 { * }
+sub msgpack_version_minor    is native(&library) is export returns int32 { * }
 #
 # TODO handle backward compatibility under 1.0.0
 # See https://github.com/msgpack/msgpack-c/blob/master/CHANGELOG.md
 #
-#sub msgpack_version_revision is native(&libmsgpack) is export returns int32 { * }
+#sub msgpack_version_revision is native(&library) is export returns int32 { * }
