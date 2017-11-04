@@ -148,19 +148,67 @@ class msgpack_zone is repr('CStruct') is export {
     has uint64 $.filler7;
 }
 
+class fake_msgpack_object is repr('CStruct') is export {
+	has uint32 $.type;
+	has uint32 $.i1;
+	has uint32 $.i2;
+	has uint32 $.i3;
+	has uint32 $.i4;
+	has uint32 $.i5;
+}
+
+class msgpack_object_array is repr('CStruct') is export {
+    has uint32 $.size;
+    has CArray[fake_msgpack_object] $.ptr;  # TODO Array[msgpack_object]
+};
+
+class msgpack_object_kv is repr('CStruct') is export {
+    HAS fake_msgpack_object $.key;
+    HAS fake_msgpack_object $.val;
+};
+
+class msgpack_object_map is repr('CStruct') is export {
+    has uint32                    $.size;
+    has CArray[msgpack_object_kv] $.ptr;
+} ;
+
+class msgpack_object_str is repr('CStruct') is export {
+    has uint32        $.size;
+    has CArray[uint8] $.ptr;
+}
+
+class msgpack_object_bin  is repr('CStruct') is export {
+    has uint32        $.size;
+    has CArray[uint8] $.ptr;
+}
+
+class msgpack_object_ext is repr('CStruct') is export {
+    has int8          $.type;
+    has uint32        $.size;
+    has CArray[uint8] $.ptr;
+}
+
+class msgpack_object_union is repr('CUnion') is export {
+    has bool                 $.boolean;
+    has uint64               $.u64;
+    has int64                $.i64;
+    has num64                $.f64;
+    HAS msgpack_object_array $.array;
+    HAS msgpack_object_map   $.map;
+    HAS msgpack_object_str   $.str;
+    HAS msgpack_object_bin   $.bin;
+    HAS msgpack_object_ext   $.ext;
+}
+
 class msgpack_object is repr('CStruct') is export {
-	has int32 $.type is rw; # msgpack_object_type
-	#TODO HAS msgpack_object_union $.via  is rw;
-	has int32 $.c1 is rw;
-	has int32 $.c2 is rw;
-	has int32 $.c3 is rw;
-	has int32 $.c4 is rw;
-	has int32 $.c5 is rw;
+    # TODO msgpack_object_type when it works in Rakudo
+    has uint32               $.type; 
+    HAS msgpack_object_union $.via;
 }
 
 class msgpack_unpacked is repr('CStruct') is export {
-    has Pointer[void]   $.zone;
-    HAS msgpack_object  $.data;
+    has Pointer[msgpack_zone] $.zone is rw;
+    HAS msgpack_object        $.data is rw;
 }
 
 enum msgpack_unpack_return is export (
