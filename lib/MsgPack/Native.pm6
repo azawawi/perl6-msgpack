@@ -191,7 +191,7 @@ class msgpack_object is repr('CStruct') is export {
     HAS msgpack_object_union $.via;
 }
 
-class msgpack_object_kv is repr('CStruct') {
+class msgpack_object_kv is repr('CStruct') is export {
     HAS msgpack_object $.key;
     HAS msgpack_object $.val;
 }

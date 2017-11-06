@@ -6,7 +6,7 @@ use v6;
 use lib 'lib';
 use MsgPack;
 
-my $data     = [1, True, "Example"];
+my $data     = [1, True, "Example", { "that" => "rocks" }];
 my $packed   = MsgPack::pack($data);
 my $unpacked = MsgPack::unpack($packed);
 

@@ -53,16 +53,16 @@ method unpack-object(msgpack_object $obj) {
             return $obj.via ?? True !! False;
         }
         when MSGPACK_OBJECT_POSITIVE_INTEGER {
-            return $obj.via.u64.Int;
+            return $obj.via ?? $obj.via.u64.Int !! 0;
         }
         when MSGPACK_OBJECT_NEGATIVE_INTEGER {
-            return $obj.via.i64.Int;
+            return $obj.via ?? $obj.via.i64.Int !! 0;
         }
         when MSGPACK_OBJECT_FLOAT32 {
-            return $obj.via.f64.Num;
+            return $obj.via ?? $obj.via.f64.Num !! 0;
         }
         when MSGPACK_OBJECT_FLOAT64 {
-            return $obj.via.f64.Num;
+            return $obj.via ?? $obj.via.f64.Num !! 0;
         }
         when MSGPACK_OBJECT_STR {
             return "" unless $obj.via;
@@ -78,15 +78,31 @@ method unpack-object(msgpack_object $obj) {
                 Pointer[Pointer[msgpack_object]],
                 $array.ptr
             );
-            my $result;
+            my $result = [];
             for ^$array.size -> $i {
-                $result.append: self.unpack-object($o.deref[$i]);
+                my $t = self.unpack-object($o.deref[$i]);
+                $result.append: $t;
             }
             return $result;
         }
-        when MSGPACK_OBJECT_MAP              { say "Hash" }
+        when MSGPACK_OBJECT_MAP {
+            return Hash.new unless $obj.via;
+            my $map = $obj.via.map;
+            my $o   = nativecast(
+                Pointer[Pointer[msgpack_object_kv]],
+                $map.ptr
+            );
+            my $result = %();
+            for ^$map.size -> $i {
+                my $kv  = $o.deref[$i];
+                my $key = self.unpack-object($kv.key);
+                my $val = self.unpack-object($kv.val);
+                $result{$key} = $val;
+            }
+            return $result;
+        }
         when MSGPACK_OBJECT_BIN {
-            return Blob.new() unless $obj.via;
+            return Blob.new unless $obj.via;
             my $bin   = $obj.via.bin;
             my $size  = $bin.size;
             my $bytes = $bin.ptr[^$size];
