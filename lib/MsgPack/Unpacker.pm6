@@ -23,11 +23,8 @@ method unpack(Blob $packed) {
     my $ret            = msgpack_unpack_next($result, $buffer, $len, $off);
     my $unpacked;
     while $ret == MSGPACK_UNPACK_SUCCESS.value {
-        my msgpack_object $obj = $result.data;
-
-        $unpacked = self.unpack-object($obj);
-
-        $ret = msgpack_unpack_next($result, $buffer, $len, $off);
+        $unpacked = self.unpack-object($result.data);
+        $ret      = msgpack_unpack_next($result, $buffer, $len, $off);
     }
 
     # Cleanup
