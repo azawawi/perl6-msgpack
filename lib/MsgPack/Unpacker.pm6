@@ -67,15 +67,15 @@ method unpack-object(msgpack_object $obj) {
         }
         when MSGPACK_OBJECT_ARRAY {
             return [] unless $obj.via;
-            my $array = $obj.via.array;
-            my $o     = nativecast(
+            my $array-obj = $obj.via.array;
+            my $o         = nativecast(
                 Pointer[Pointer[msgpack_object]],
-                $array.ptr
+                $array-obj.ptr
             );
             my $result = [];
-            for ^$array.size -> $i {
-                my $t = self.unpack-object($o.deref[$i]);
-                $result.append: $t;
+            my $array  = $o.deref;
+            for ^$array-obj.size {
+                $result.append: self.unpack-object( $array[$_] );
             }
             return $result;
         }
