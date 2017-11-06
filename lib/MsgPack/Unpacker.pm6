@@ -6,8 +6,6 @@ unit class MsgPack::Unpacker;
 use NativeCall;
 use MsgPack::Native;
 
-constant UNPACKED_BUFFER_SIZE = 2048;
-
 method unpack(Blob $packed) {
     # Copy our Blob bytes to simple buffer
     my $sbuf = msgpack_sbuffer.new;
@@ -17,7 +15,6 @@ method unpack(Blob $packed) {
 
     # Initialize unpacker
     my $result          = msgpack_unpacked.new;
-    my $unpacked_buffer = CArray[uint8].new([0 xx UNPACKED_BUFFER_SIZE]);
     msgpack_unpacked_init($result);
 
     # Start unpacking
