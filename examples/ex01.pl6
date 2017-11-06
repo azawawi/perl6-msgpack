@@ -10,6 +10,6 @@ my $data     = [1, True, "Example"];
 my $packed   = MsgPack::pack($data);
 my $unpacked = MsgPack::unpack($packed);
 
-say $data.perl;
-say $packed.perl;
-say $unpacked.perl;
+say "data     : " ~ $data.perl;
+say "packed   : " ~ $packed.perl;
+say "unpacked : " ~ $unpacked.perl;
