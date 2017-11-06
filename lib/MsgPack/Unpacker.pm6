@@ -92,9 +92,12 @@ method unpack-object(msgpack_object $obj) {
             my $bytes = $bin.ptr[^$size];
             return Blob.new($bytes);
         }
-        when MSGPACK_OBJECT_EXT              { say "Extension" }
+        when MSGPACK_OBJECT_EXT              {
+            warn "Extension is not currently support"
+        }
         default {
-            say "Unknown object type: " ~ $obj.type;
+            #TODO add a proper typed exception
+            die "Unknown object type: " ~ $obj.type;
         }
     }
 }
