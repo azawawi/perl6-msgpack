@@ -30,32 +30,33 @@ method unpack(Blob $packed) {
     while $ret == MSGPACK_UNPACK_SUCCESS.value {
         my msgpack_object $obj = $result.data;
 
+        say "Encountered object type #" ~ $obj.type;
+        wrapped_msgpack_object_print($obj);
+
         given $obj.type {
             when MSGPACK_OBJECT_NIL              { say "Any"   }
-            when MSGPACK_OBJECT_BOOLEAN          { say "Bool" } 
+            when MSGPACK_OBJECT_BOOLEAN          { say "Bool" }
             when MSGPACK_OBJECT_POSITIVE_INTEGER { say "+ive Int" }
             when MSGPACK_OBJECT_NEGATIVE_INTEGER { say "-ive Int" }
             when MSGPACK_OBJECT_FLOAT32          { say "Float 32-bit"}
             when MSGPACK_OBJECT_FLOAT64          { say "Float 64-bit"}
-            when MSGPACK_OBJECT_STR              { say "Str" } 
+            when MSGPACK_OBJECT_STR              { say "Str" }
             when MSGPACK_OBJECT_ARRAY {
-                say "Array";
                 my $array = $obj.via.array;
-                say "Size: " ~ $array.size;
+                say "Array size: " ~ $array.size;
+                my $o = nativecast(Pointer[msgpack_object], $array.ptr);
                 for ^$array.size -> $i {
-                    say "i: $i";
-                    #say $array.ptr[$i].type;
-                    #msgpack_object_array
+                    say $o.deref[0].type; #TODO figure out how to deference this
                 }
-            } 
-            when MSGPACK_OBJECT_MAP              { say "Hash" } 
-            when MSGPACK_OBJECT_BIN              { say "Bin" } 
-            when MSGPACK_OBJECT_EXT              { say "Extension" } 
+            }
+            when MSGPACK_OBJECT_MAP              { say "Hash" }
+            when MSGPACK_OBJECT_BIN              { say "Bin" }
+            when MSGPACK_OBJECT_EXT              { say "Extension" }
             default {
                 say "Unknown object type: " ~ $obj.type;
             }
         }
-        
+
         #TODO reconstruct the Perl 6 object
         $ret = msgpack_unpack_next($result, $buffer, $len, $off);
     }
