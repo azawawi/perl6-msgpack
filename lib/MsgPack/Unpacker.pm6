@@ -45,8 +45,6 @@ method unpack(Blob $packed) {
 }
 
 method unpack-object(msgpack_object $obj) {
-    #TODO remove debuggy say :)
-    say $obj.perl;
     given $obj.type {
         when MSGPACK_OBJECT_NIL {
             return Any;
