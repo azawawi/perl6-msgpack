@@ -48,10 +48,10 @@ method unpack-object(msgpack_object $obj) {
     #TODO remove debuggy say :)
     say $obj.perl;
     given $obj.type {
-        when MSGPACK_OBJECT_NIL              {
+        when MSGPACK_OBJECT_NIL {
             return Any;
         }
-        when MSGPACK_OBJECT_BOOLEAN          {
+        when MSGPACK_OBJECT_BOOLEAN {
             return $obj.via.boolean == 1 ?? True !! False;
         }
         when MSGPACK_OBJECT_POSITIVE_INTEGER {
@@ -60,10 +60,10 @@ method unpack-object(msgpack_object $obj) {
         when MSGPACK_OBJECT_NEGATIVE_INTEGER {
             return $obj.via.i64.Int;
         }
-        when MSGPACK_OBJECT_FLOAT32          {
+        when MSGPACK_OBJECT_FLOAT32 {
             return $obj.via.f64.Num;
         }
-        when MSGPACK_OBJECT_FLOAT64          {
+        when MSGPACK_OBJECT_FLOAT64 {
             return $obj.via.f64.Num;
         }
         when MSGPACK_OBJECT_STR {
@@ -74,7 +74,10 @@ method unpack-object(msgpack_object $obj) {
         }
         when MSGPACK_OBJECT_ARRAY {
             my $array = $obj.via.array;
-            my $o = nativecast(Pointer[Pointer[msgpack_object]], $array.ptr);
+            my $o     = nativecast(
+                Pointer[Pointer[msgpack_object]],
+                $array.ptr
+            );
             my $result;
             for ^$array.size -> $i {
                 $result.append: self.unpack-object($o.deref[$i]);
