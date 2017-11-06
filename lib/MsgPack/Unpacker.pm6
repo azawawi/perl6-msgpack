@@ -52,7 +52,7 @@ method unpack-object(msgpack_object $obj) {
             return Any;
         }
         when MSGPACK_OBJECT_BOOLEAN {
-            return $obj.via.boolean == 1 ?? True !! False;
+            return $obj.via ?? True !! False;
         }
         when MSGPACK_OBJECT_POSITIVE_INTEGER {
             return $obj.via.u64.Int;
@@ -67,12 +67,14 @@ method unpack-object(msgpack_object $obj) {
             return $obj.via.f64.Num;
         }
         when MSGPACK_OBJECT_STR {
+            return "" unless $obj.via;
             my $str   = $obj.via.str;
             my $size  = $str.size;
             my $bytes = $str.ptr[^$size];
             return Blob.new($bytes).decode;
         }
         when MSGPACK_OBJECT_ARRAY {
+            return [] unless $obj.via;
             my $array = $obj.via.array;
             my $o     = nativecast(
                 Pointer[Pointer[msgpack_object]],
