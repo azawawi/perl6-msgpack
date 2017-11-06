@@ -28,8 +28,6 @@ method unpack(Blob $packed) {
     while $ret == MSGPACK_UNPACK_SUCCESS.value {
         my msgpack_object $obj = $result.data;
 
-        #TODO remove debuggy say :)
-        say "Object type #" ~ $obj.type;
         $unpacked = self.unpack-object($obj);
 
         $ret = msgpack_unpack_next($result, $buffer, $len, $off);
@@ -47,18 +45,41 @@ method unpack(Blob $packed) {
 }
 
 method unpack-object(msgpack_object $obj) {
+    #TODO remove debuggy say :)
+    say $obj.perl;
     given $obj.type {
-        when MSGPACK_OBJECT_NIL              { return Any; }
-        when MSGPACK_OBJECT_BOOLEAN          { return Int($obj.via.boolean); }
-        when MSGPACK_OBJECT_POSITIVE_INTEGER { return Int($obj.via.u64); }
-        when MSGPACK_OBJECT_NEGATIVE_INTEGER { return Int($obj.via.i64); }
-        when MSGPACK_OBJECT_FLOAT32          { return Int($obj.via.f64); }
-        when MSGPACK_OBJECT_FLOAT64          { return Int($obj.via.f64); }
-        when MSGPACK_OBJECT_STR              { return "TODO Str"; }
+        when MSGPACK_OBJECT_NIL              {
+            return Any;
+        }
+        when MSGPACK_OBJECT_BOOLEAN          {
+            return $obj.via.boolean == 1 ?? True !! False;
+        }
+        when MSGPACK_OBJECT_POSITIVE_INTEGER {
+            return $obj.via.u64.Int;
+        }
+        when MSGPACK_OBJECT_NEGATIVE_INTEGER {
+            return $obj.via.i64.Int;
+        }
+        when MSGPACK_OBJECT_FLOAT32          {
+            return $obj.via.f64.Num;
+        }
+        when MSGPACK_OBJECT_FLOAT64          {
+            return $obj.via.f64.Num;
+        }
+        when MSGPACK_OBJECT_STR {
+            my $str   = $obj.via.str;
+            my $size  = $str.size;
+            my $bytes = $str.ptr[^$size];
+            return Blob.new($bytes).decode;
+        }
         when MSGPACK_OBJECT_ARRAY {
             my $array = $obj.via.array;
-            my $o = nativecast(Pointer[msgpack_object], $array.ptr);
-            return [ self.unpack-object($o.deref[0]) ];
+            my $o = nativecast(Pointer[Pointer[msgpack_object]], $array.ptr);
+            my $result;
+            for ^$array.size -> $i {
+                $result.append: self.unpack-object($o.deref[$i]);
+            }
+            return $result;
         }
         when MSGPACK_OBJECT_MAP              { say "Hash" }
         when MSGPACK_OBJECT_BIN              { say "Bin" }
