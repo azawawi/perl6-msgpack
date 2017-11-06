@@ -9,69 +9,62 @@ use MsgPack::Native;
 constant UNPACKED_BUFFER_SIZE = 2048;
 
 method unpack(Blob $packed) {
-    warn "unpack(Blob) is currently experimental....";
-
     # Copy our Blob bytes to simple buffer
     my $sbuf = msgpack_sbuffer.new;
-    msgpack_sbuffer_init($sbuf);
     my $data = CArray[uint8].new($packed);
+    msgpack_sbuffer_init($sbuf);
     msgpack_sbuffer_write($sbuf, $data, $data.elems);
 
     # Initialize unpacker
     my $result          = msgpack_unpacked.new;
     my $unpacked_buffer = CArray[uint8].new([0 xx UNPACKED_BUFFER_SIZE]);
-    my size_t $off      = 0;
     msgpack_unpacked_init($result);
 
     # Start unpacking
-    my $buffer = $sbuf.data;
-    my $len    = $sbuf.size;
-    my $ret    = msgpack_unpack_next($result, $buffer, $len, $off);
+    my size_t $off     = 0;
+    my ($buffer, $len) = ($sbuf.data, $sbuf.size);
+    my $ret            = msgpack_unpack_next($result, $buffer, $len, $off);
+    my $unpacked;
     while $ret == MSGPACK_UNPACK_SUCCESS.value {
         my msgpack_object $obj = $result.data;
 
-        say "Encountered object type #" ~ $obj.type;
-        wrapped_msgpack_object_print($obj);
+        #TODO remove debuggy say :)
+        say "Object type #" ~ $obj.type;
+        $unpacked = self.unpack-object($obj);
 
-        given $obj.type {
-            when MSGPACK_OBJECT_NIL              { say "Any"   }
-            when MSGPACK_OBJECT_BOOLEAN          { say "Bool" }
-            when MSGPACK_OBJECT_POSITIVE_INTEGER { say "+ive Int" }
-            when MSGPACK_OBJECT_NEGATIVE_INTEGER { say "-ive Int" }
-            when MSGPACK_OBJECT_FLOAT32          { say "Float 32-bit"}
-            when MSGPACK_OBJECT_FLOAT64          { say "Float 64-bit"}
-            when MSGPACK_OBJECT_STR              { say "Str" }
-            when MSGPACK_OBJECT_ARRAY {
-                my $array = $obj.via.array;
-                say "Array size: " ~ $array.size;
-                my $o = nativecast(Pointer[msgpack_object], $array.ptr);
-                for ^$array.size -> $i {
-                    say $o.deref[0].type; #TODO figure out how to deference this
-                }
-            }
-            when MSGPACK_OBJECT_MAP              { say "Hash" }
-            when MSGPACK_OBJECT_BIN              { say "Bin" }
-            when MSGPACK_OBJECT_EXT              { say "Extension" }
-            default {
-                say "Unknown object type: " ~ $obj.type;
-            }
-        }
-
-        #TODO reconstruct the Perl 6 object
         $ret = msgpack_unpack_next($result, $buffer, $len, $off);
     }
 
     # Cleanup
     msgpack_sbuffer_destroy($sbuf);
     msgpack_unpacked_destroy($result);
-    
-    if $ret == MSGPACK_UNPACK_CONTINUE {
-        #TODO this should be our success criteria to return the result object
-        say "All msgpack_object(s) in the buffer are consumed.";
-    } elsif $ret == MSGPACK_UNPACK_PARSE_ERROR {
-         #TODO exception
-         die "The data in the buf is invalid format.";
-    } else {
-        say "Return type is $ret";
+
+    #TODO throw a proper typed exception
+    die "The data in the buf is invalid format with ret = $ret"
+        if $ret != MSGPACK_UNPACK_CONTINUE;
+
+    return $unpacked;
+}
+
+method unpack-object(msgpack_object $obj) {
+    given $obj.type {
+        when MSGPACK_OBJECT_NIL              { return Any; }
+        when MSGPACK_OBJECT_BOOLEAN          { return Int($obj.via.boolean); }
+        when MSGPACK_OBJECT_POSITIVE_INTEGER { return Int($obj.via.u64); }
+        when MSGPACK_OBJECT_NEGATIVE_INTEGER { return Int($obj.via.i64); }
+        when MSGPACK_OBJECT_FLOAT32          { return Int($obj.via.f64); }
+        when MSGPACK_OBJECT_FLOAT64          { return Int($obj.via.f64); }
+        when MSGPACK_OBJECT_STR              { return "TODO Str"; }
+        when MSGPACK_OBJECT_ARRAY {
+            my $array = $obj.via.array;
+            my $o = nativecast(Pointer[msgpack_object], $array.ptr);
+            return [ self.unpack-object($o.deref[0]) ];
+        }
+        when MSGPACK_OBJECT_MAP              { say "Hash" }
+        when MSGPACK_OBJECT_BIN              { say "Bin" }
+        when MSGPACK_OBJECT_EXT              { say "Extension" }
+        default {
+            say "Unknown object type: " ~ $obj.type;
+        }
     }
 }
