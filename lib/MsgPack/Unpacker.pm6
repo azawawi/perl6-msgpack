@@ -85,7 +85,13 @@ method unpack-object(msgpack_object $obj) {
             return $result;
         }
         when MSGPACK_OBJECT_MAP              { say "Hash" }
-        when MSGPACK_OBJECT_BIN              { say "Bin" }
+        when MSGPACK_OBJECT_BIN {
+            return Blob.new() unless $obj.via;
+            my $bin   = $obj.via.bin;
+            my $size  = $bin.size;
+            my $bytes = $bin.ptr[^$size];
+            return Blob.new($bytes);
+        }
         when MSGPACK_OBJECT_EXT              { say "Extension" }
         default {
             say "Unknown object type: " ~ $obj.type;
