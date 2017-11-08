@@ -116,9 +116,14 @@ sub unpack-object-map(msgpack_object $obj) {
     );
     my $result = %();
     for ^$map.size -> $i {
-        my $kv  = $o.deref[$i];
-        my $key = (%unpacker-map{$kv.key.type})( $kv.key );
-        my $val = (%unpacker-map{$kv.val.type})( $kv.val );
+        my $kv      = $o.deref[$i];
+        my $key-obj = $kv.key;
+        my $val-obj = $kv.val;
+        my ($key, $val);
+        $key = (%unpacker-map{$key-obj.type})( $key-obj )
+            if $key-obj;
+        $val = (%unpacker-map{$val-obj.type})( $val-obj )
+            if $val-obj;
         $result{$key} = $val;
     }
     return $result;
